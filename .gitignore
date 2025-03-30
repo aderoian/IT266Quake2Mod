@@ -1,0 +1,15 @@
+# Visual Studio
+.vs/
+
+# log files
+*.tlog
+*.log
+
+# build results
+game/release/
+game/debug/
+release/
+debug/
+
+# User-specific files
+*.user
