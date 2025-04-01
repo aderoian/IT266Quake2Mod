@@ -617,38 +617,63 @@ void rocket_touch (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *su
 	G_FreeEdict (ent);
 }
 
-void fire_rocket (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed, float damage_radius, int radius_damage)
+void rocket_think(edict_t* rocket)
 {
-	edict_t	*rocket;
+	// console log
+	vec3_t dir;
+	VectorSet(dir, 0, -1, 0);
+	
+	Com_Printf("Rocket is thinking (Health: %d)\n", rocket->health);
+	rocket->health -= 1;
+	if (rocket->health <= 0)
+	{
+		rocket->nextthink = level.time + (float) FRAMETIME;
+		rocket->think = G_FreeEdict;
+	}
+	else
+	{
+		rocket->nextthink = level.time + 0.1;
 
+		// drop grenade
+		Com_Printf("Rocket is dropping grenade\n");
+		fire_grenade(rocket->owner, rocket->s.origin, rocket->movedir, 120, 400, 1.5, 120);
+	}
+}
+
+void fire_rocket(edict_t* self, vec3_t start, vec3_t dir, int damage, int speed, float damage_radius, int radius_damage)
+{
+	edict_t* rocket;
+
+	Com_Printf("Firing rocket\n");
 	rocket = G_Spawn();
-	VectorCopy (start, rocket->s.origin);
-	VectorCopy (dir, rocket->movedir);
-	vectoangles (dir, rocket->s.angles);
-	VectorScale (dir, speed, rocket->velocity);
+	VectorCopy(start, rocket->s.origin);
+	VectorCopy(dir, rocket->movedir);
+	vectoangles(dir, rocket->s.angles);
+	VectorScale(dir, speed, rocket->velocity);
 	rocket->movetype = MOVETYPE_FLYMISSILE;
 	rocket->clipmask = MASK_SHOT;
 	rocket->solid = SOLID_BBOX;
 	rocket->s.effects |= EF_ROCKET;
-	VectorClear (rocket->mins);
-	VectorClear (rocket->maxs);
-	rocket->s.modelindex = gi.modelindex ("models/objects/rocket/tris.md2");
+	VectorClear(rocket->mins);
+	VectorClear(rocket->maxs);
+	rocket->s.modelindex = gi.modelindex("models/objects/rocket/tris.md2");
 	rocket->owner = self;
 	rocket->touch = rocket_touch;
-	rocket->nextthink = level.time + 8000/speed;
-	rocket->think = G_FreeEdict;
+	rocket->nextthink = level.time + 0.1;
+	rocket->think = rocket_think;
+	rocket->max_health = 20;
+	rocket->health = 20;	// 10 seconds of life
 	rocket->dmg = damage;
 	rocket->radius_dmg = radius_damage;
 	rocket->dmg_radius = damage_radius;
-	rocket->s.sound = gi.soundindex ("weapons/rockfly.wav");
+	rocket->s.sound = gi.soundindex("weapons/rockfly.wav");
 	rocket->classname = "rocket";
 
 	if (self->client)
-		check_dodge (self, rocket->s.origin, dir, speed);
+		check_dodge(self, rocket->s.origin, dir, speed);
 
-	gi.linkentity (rocket);
+	gi.linkentity(rocket);
 }
-
 
 /*
 =================
