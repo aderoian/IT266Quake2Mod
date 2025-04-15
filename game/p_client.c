@@ -627,6 +627,9 @@ void InitClientPersistant (gclient_t *client)
 	client->pers.max_slugs		= 50;
 
 	client->pers.connected = true;
+
+	client->hasFlashlight = false;
+	client->flashlightActive = false;
 }
 
 
@@ -1573,6 +1576,7 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 	edict_t	*other;
 	int		i, j;
 	pmove_t	pm;
+	vec3_t start, forward, end;
 
 	level.current_entity = ent;
 	client = ent->client;
@@ -1740,6 +1744,33 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 		other = g_edicts + i;
 		if (other->inuse && other->client->chase_target == ent)
 			UpdateChaseCam(other);
+	}
+
+	
+	// TODO: Battery pack tool
+	if (client->hasFlashlight) {
+		if (ucmd->impulse == 50) {
+			client->flashlightActive = !client->flashlightActive;
+		}
+
+		if (client->flashlightActive) {
+			// Get forward vector
+			AngleVectors(ent->client->v_angle, forward, NULL, NULL);
+
+			// Start at eye position
+			VectorCopy(ent->s.origin, start);
+			start[2] += ent->viewheight;
+
+			// Project beam out
+			VectorMA(start, 128, forward, end); // short range for flashlight
+
+			gi.WriteByte(svc_temp_entity);
+			gi.WriteByte(TE_FLASHLIGHT);
+			gi.WritePosition(end);      // location to place the flashlight
+			gi.WriteShort(ent - g_edicts); // entity number to associate (usually the player)
+
+			gi.unicast(ent, true); // only send to the player themselves
+		}
 	}
 }
 

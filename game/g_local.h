@@ -258,6 +258,7 @@ typedef struct gitem_s
 	int			tag;
 
 	char		*precaches;		// string of all models, sounds, and images this item will use
+	int			value;			// for cash items, how much is it worth
 } gitem_t;
 
 
@@ -959,6 +960,9 @@ struct gclient_s
 
 	edict_t		*chase_target;		// player we are chasing
 	qboolean	update_chase;		// need to update chase info?
+
+	qboolean	hasFlashlight;
+	qboolean	flashlightActive;
 };
 
 
