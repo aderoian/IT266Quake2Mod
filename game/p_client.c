@@ -628,8 +628,8 @@ void InitClientPersistant (gclient_t *client)
 
 	client->pers.connected = true;
 
-	client->hasFlashlight = false;
-	client->flashlightActive = false;
+	client->pers.hasFlashlight = false;
+	client->pers.flashlightActive = false;
 }
 
 
@@ -1562,6 +1562,8 @@ void PrintPmove (pmove_t *pm)
 	Com_Printf ("sv %3i:%i %i\n", pm->cmd.impulse, c1, c2);
 }
 
+static int lastSecond = 0;
+
 /*
 ==============
 ClientThink
@@ -1577,6 +1579,7 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 	int		i, j;
 	pmove_t	pm;
 	vec3_t start, forward, end;
+	qboolean showLight = true;
 
 	level.current_entity = ent;
 	client = ent->client;
@@ -1754,24 +1757,36 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 		}
 
 		if (client->flashlightActive) {
-			// Get forward vector
-			AngleVectors(ent->client->v_angle, forward, NULL, NULL);
 
-			// Start at eye position
-			VectorCopy(ent->s.origin, start);
-			start[2] += ent->viewheight;
+			if (((int)level.time) - lastSecond >= 5) {
+				if (!UseEnergy(ent, 5)) {
+					showLight = false;
+				}
+			}
 
-			// Project beam out
-			VectorMA(start, 128, forward, end); // short range for flashlight
+			if (showLight) {
 
-			gi.WriteByte(svc_temp_entity);
-			gi.WriteByte(TE_FLASHLIGHT);
-			gi.WritePosition(end);      // location to place the flashlight
-			gi.WriteShort(ent - g_edicts); // entity number to associate (usually the player)
+				// Get forward vector
+				AngleVectors(ent->client->v_angle, forward, NULL, NULL);
 
-			gi.unicast(ent, true); // only send to the player themselves
+				// Start at eye position
+				VectorCopy(ent->s.origin, start);
+				start[2] += ent->viewheight;
+
+				// Project beam out
+				VectorMA(start, 128, forward, end); // short range for flashlight
+
+				gi.WriteByte(svc_temp_entity);
+				gi.WriteByte(TE_FLASHLIGHT);
+				gi.WritePosition(end);      // location to place the flashlight
+				gi.WriteShort(ent - g_edicts); // entity number to associate (usually the player)
+
+				gi.unicast(ent, true); // only send to the player themselves
+			}
 		}
 	}
+
+	lastSecond = (int)level.time;
 }
 
 
@@ -1833,4 +1848,36 @@ void ClientBeginServerFrame (edict_t *ent)
 			PlayerTrail_Add (ent->s.old_origin);
 
 	client->latched_buttons = 0;
+}
+
+static qboolean GiveBatteryPack(edict_t* ent, int size) {
+	for (int i = 0; i < MAX_BATTERYPACK; i++) {
+		if (ent->client->pers.batteryPack[i] == 0) {
+			ent->client->pers.batteryPack[i] = size;
+			gi.cprintf(ent, PRINT_HIGH, "You have received a battery pack of size %d\n", size);
+			return true;
+		}
+	}
+
+	return false;
+}
+
+static qboolean UseEnergy(edict_t* ent, int amount) {
+	int total = amount;
+	int storage;
+	int taken;
+	for (int i = 0; i < MAX_BATTERYPACK; i++) {
+		storage = ent->client->pers.batteryPack[i];
+		if (storage > 0) {
+			taken = min(storage, total);
+			ent->client->pers.batteryPack[i] -= taken;
+			total -= taken;
+		}
+
+		if (total <= 0) {
+			return true;
+		}
+	}
+
+	return false;
 }

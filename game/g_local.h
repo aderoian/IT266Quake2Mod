@@ -863,6 +863,10 @@ typedef struct
 	int			helpchanged;
 
 	qboolean	spectator;			// client is a spectator
+
+	qboolean	hasFlashlight;
+	qboolean	flashlightActive;
+	int			batteryPack[MAX_BATTERYPACK];
 } client_persistant_t;
 
 // client data that stays across deathmatch respawns

@@ -955,11 +955,18 @@ void Cmd_SpawnItem_f(edict_t* ent) {
 }
 
 void Cmd_GiveFlashlight_f(edict_t* ent) {
-	ent->client->hasFlashlight = true;
+	ent->client->pers.hasFlashlight = true;
 }
 
 void Cmd_ToggleFlshlight_f(edict_t* ent) {
-	ent->client->flashlightActive = !ent->client->flashlightActive;
+	ent->client->pers.flashlightActive = !ent->client->flashlightActive;
+}
+
+void Cmd_GiveBatteryPack_f(edict_t* ent) {
+	int i;
+	for (i = 0; i < MAX_BATTERYPACK; i++) {
+		ent->client->pers.batteryPack[i] = 100;
+	}
 }
 
 
@@ -1056,6 +1063,9 @@ void ClientCommand (edict_t *ent)
 		Cmd_GiveFlashlight_f(ent);
 	else if (Q_stricmp(cmd, "fl") == 0)
 		Cmd_ToggleFlshlight_f(ent);
+	else if (Q_stricmp(cmd, "givebattery") == 0) {
+		Cmd_GiveBatteryPack_f(ent);
+	}
 	else	// anything that doesn't match a command will be a chat
 		Cmd_Say_f (ent, false, true);
 }

@@ -83,6 +83,7 @@ typedef enum {false, true}	qboolean;
 #define	MAX_IMAGES			256
 #define	MAX_ITEMS			256
 #define MAX_GENERAL			(MAX_CLIENTS*2)	// general config strings
+#define MAX_BATTERYPACK		4		// max number of battery packs
 
 
 // game print flags

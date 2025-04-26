@@ -397,7 +397,7 @@ fire_grenade
 */
 static void Grenade_Explode (edict_t *ent)
 {
-	vec3_t		origin;
+	/*vec3_t		origin;
 	int			mod;
 
 	if (ent->owner->client)
@@ -449,7 +449,52 @@ static void Grenade_Explode (edict_t *ent)
 	gi.WritePosition (origin);
 	gi.multicast (ent->s.origin, MULTICAST_PHS);
 
-	G_FreeEdict (ent);
+	G_FreeEdict (ent);*/
+
+	int i;
+	edict_t* monster;
+
+	Com_Printf("Grenade think: time: %f delay: %f", level.time, ent->delay);
+	// Noise maker
+	if (level.time > ent->delay)
+	{
+		// Finished making noise
+		G_FreeEdict(ent);
+		return;
+	}
+
+	// Play the noise sound
+	gi.sound(ent, CHAN_VOICE, gi.soundindex("world/land1.wav"), 1, ATTN_NORM, 0);
+
+	// Alert nearby monsters
+	for (i = 1; i < globals.num_edicts; i++)
+	{
+		monster = &g_edicts[i];
+
+		if (!monster->inuse)
+			continue;
+		if (!(monster->svflags & SVF_MONSTER))
+			continue;
+		if (monster->health <= 0)
+			continue;
+
+		// Distance check
+		if (VectorDistance(monster->s.origin, ent->s.origin) > 1000) // only within 600 units
+			continue;
+
+		// Make monster move toward the noise maker
+		VectorSubtract(ent->s.origin, monster->s.origin, monster->move_origin);
+		VectorNormalize(monster->move_origin);
+
+		monster->ideal_yaw = vectoyaw(monster->move_origin);
+		monster->yaw_speed = 20; // slow turn speed toward noise
+
+		// Force monster to start walking toward it
+		monster->monsterinfo.walk(monster);
+	}
+
+	// Think again in a little bit (like every 0.5 seconds)
+	ent->nextthink = level.time + 0.5f;
 }
 
 static void Grenade_Touch (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf)
@@ -480,7 +525,7 @@ static void Grenade_Touch (edict_t *ent, edict_t *other, cplane_t *plane, csurfa
 	}
 
 	ent->enemy = other;
-	Grenade_Explode (ent);
+	//Grenade_Explode (ent);
 }
 
 void fire_grenade (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int speed, float timer, float damage_radius)
@@ -507,7 +552,8 @@ void fire_grenade (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int s
 	grenade->s.modelindex = gi.modelindex ("models/objects/grenade/tris.md2");
 	grenade->owner = self;
 	grenade->touch = Grenade_Touch;
-	grenade->nextthink = level.time + timer;
+	grenade->delay = level.time + 30.0f;
+	grenade->nextthink = level.time + 0.5f;
 	grenade->think = Grenade_Explode;
 	grenade->dmg = damage;
 	grenade->dmg_radius = damage_radius;
