@@ -1848,6 +1848,37 @@ void ClientBeginServerFrame (edict_t *ent)
 			PlayerTrail_Add (ent->s.old_origin);
 
 	client->latched_buttons = 0;
+
+	if (!ent->client->showscores && !ent->client->showhelp && !level.intermissiontime)
+	{
+		// Inventory HUD
+		char layout[MAX_STRING_CHARS];
+		int i;
+
+		/*strcpy(layout, "xv 0 yv 100 string \"Inventory: ");
+
+		for (i = 0; i < ent->client->pers.numInventoryItems; i++)
+		{
+			gitem_t* item = ent->client->pers.itemInventory[i];
+			if (item)
+			{
+				strcat(layout, item->pickup_name);
+				strcat(layout, " ");
+			}
+		}
+
+		strcat(layout, "\" ");
+
+		gi.WriteByte(svc_layout);
+		gi.WriteString(layout);
+		gi.unicast(ent, true);*/
+
+		Com_sprintf(layout, sizeof(layout), "xv 50 yv 164 string2 \" kills     goals    secrets\" ");
+		gi.dprintf("layout string: %s\n", layout);
+		gi.WriteByte(svc_layout);
+		gi.WriteString(layout);
+		gi.unicast(ent, true);
+	}
 }
 
 static qboolean GiveBatteryPack(edict_t* ent, int size) {

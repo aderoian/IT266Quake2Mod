@@ -761,12 +761,36 @@ Touch_Item
 void Touch_Item (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf)
 {
 	qboolean	taken;
+	gitem_t* item;
+	int inventorySize;
 
 	if (!other->client)
 		return;
 	if (other->health < 1)
 		return;		// dead people can't pickup
-	if (!ent->item->pickup)
+
+	item = ent->item;
+	if (!item) return;
+
+	// Check if inventory has space
+	inventorySize = other->client->pers.hasBackpack ? MAX_INVENTORY : 3;
+	if (other->client->pers.numInventoryItems < inventorySize) {
+		int index = other->client->pers.numInventoryItems;
+		other->client->pers.itemInventory[index] = item;
+		other->client->pers.numInventoryItems++;
+
+		// Remove item entity from world
+		G_FreeEdict(ent);
+
+		return;
+	}
+
+	// Otherwise, fallback to default pickup (too much in inventory)
+	if (ent->item->pickup && !ent->item->pickup(ent, other))
+		return;
+
+
+	/*if (!ent->item->pickup)
 		return;		// not a grabbable item?
 
 	taken = ent->item->pickup(ent, other);
@@ -817,7 +841,7 @@ void Touch_Item (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf
 			ent->flags &= ~FL_RESPAWN;
 		else
 			G_FreeEdict (ent);
-	}
+	}*/
 }
 
 //======================================================================

@@ -969,6 +969,78 @@ void Cmd_GiveBatteryPack_f(edict_t* ent) {
 	}
 }
 
+void InventoryItem_Think(edict_t* ent) {
+	ent->touch = Touch_Item;
+}
+
+void Cmd_ThrowItem_f(edict_t* ent)
+{
+	edict_t* dropped;
+	gitem_t* item;
+	char* model;
+
+	if (ent->client->pers.numInventoryItems<= 0)
+		return; // nothing to throw
+
+	item = ent->client->pers.itemInventory[0];
+
+	Com_Printf("Throwing item: %s\n", item->pickup_name);
+
+	// Spawn the item entity back into the world
+	dropped = G_Spawn();
+	dropped->classname = item->classname;
+	dropped->item = item;
+	dropped->spawnflags = DROPPED_ITEM;
+
+	dropped->solid = SOLID_TRIGGER;
+	dropped->movetype = MOVETYPE_TOSS;
+
+	dropped->touch = NULL; // disable touching
+	dropped->think = InventoryItem_Think;
+	dropped->nextthink = level.time + 1.0; // wait 1 second
+
+	model = item->world_model;
+	if (!model) model = "models/weapons/g_rocket/tris.md2";
+	dropped->s.modelindex = gi.modelindex(model);
+	if (!dropped->s.modelindex)
+	{
+		gi.dprintf("Warning: No model for dropped item!\n");
+		G_FreeEdict(dropped);
+		return;
+	}
+
+	VectorCopy(ent->s.origin, dropped->s.origin);
+	VectorSet(dropped->mins, -15, -15, -15);
+	VectorSet(dropped->maxs, 15, 15, 15);
+
+	VectorCopy(ent->velocity, dropped->velocity);
+	dropped->velocity[0] += 300 * cos(ent->s.angles[YAW] * M_PI / 180.0);
+	dropped->velocity[1] += 300 * sin(ent->s.angles[YAW] * M_PI / 180.0);
+	dropped->velocity[2] += 200;
+
+	gi.linkentity(dropped);
+
+	// Shift inventory left
+	for (int i = 1; i < ent->client->pers.numInventoryItems; i++) {
+		ent->client->pers.itemInventory[i - 1] = ent->client->pers.itemInventory[i];
+	}
+	ent->client->pers.numInventoryItems--;
+}
+
+void Cmd_SeeInventory_f(edict_t* ent) {
+	int size;
+	gitem_t* item;
+	
+	size = ent->client->pers.numInventoryItems;
+	Com_Printf("Number of items: %d/%d", size, ent->client->pers.hasBackpack ? size : 3);
+	for (int i = 0; i < ent->client->pers.numInventoryItems; i++) {
+		item = ent->client->pers.itemInventory[i];
+		if (!item) continue;
+
+		Com_Printf("%d: Item: %s", i, item->pickup_name);
+	}
+}
+
 
 /*
 =================
@@ -1063,9 +1135,12 @@ void ClientCommand (edict_t *ent)
 		Cmd_GiveFlashlight_f(ent);
 	else if (Q_stricmp(cmd, "fl") == 0)
 		Cmd_ToggleFlshlight_f(ent);
-	else if (Q_stricmp(cmd, "givebattery") == 0) {
+	else if (Q_stricmp(cmd, "givebattery") == 0)
 		Cmd_GiveBatteryPack_f(ent);
-	}
+	else if (Q_stricmp(cmd, "throwitem") == 0)
+		Cmd_ThrowItem_f(ent);
+	else if (Q_stricmp(cmd, "seeinv") == 0)
+		Cmd_SeeInventory_f(ent);
 	else	// anything that doesn't match a command will be a chat
 		Cmd_Say_f (ent, false, true);
 }

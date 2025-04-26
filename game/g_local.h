@@ -867,6 +867,10 @@ typedef struct
 	qboolean	hasFlashlight;
 	qboolean	flashlightActive;
 	int			batteryPack[MAX_BATTERYPACK];
+
+	qboolean	hasBackpack;
+	int			numInventoryItems;
+	gitem_t*	itemInventory[MAX_INVENTORY];
 } client_persistant_t;
 
 // client data that stays across deathmatch respawns

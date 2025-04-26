@@ -453,6 +453,7 @@ static void Grenade_Explode (edict_t *ent)
 
 	int i;
 	edict_t* monster;
+	vec3_t dist;
 
 	Com_Printf("Grenade think: time: %f delay: %f", level.time, ent->delay);
 	// Noise maker
@@ -479,7 +480,8 @@ static void Grenade_Explode (edict_t *ent)
 			continue;
 
 		// Distance check
-		if (VectorDistance(monster->s.origin, ent->s.origin) > 1000) // only within 600 units
+		VectorSubtract(monster->s.origin, ent->s.origin, dist);
+		if (VectorLength(dist) > 600) // only within 600 units
 			continue;
 
 		// Make monster move toward the noise maker
