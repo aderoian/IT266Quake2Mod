@@ -522,8 +522,9 @@ void SpawnEntities (char *mapname, char *entities, char *spawnpoint)
 	edict_t		*ent;
 	int			inhibit;
 	char		*com_token;
-	int			i;
+	int			i, j;
 	float		skill_level;
+	edict_t* marker;
 
 	skill_level = floor (skill->value);
 	if (skill_level < 0)
@@ -601,6 +602,31 @@ void SpawnEntities (char *mapname, char *entities, char *spawnpoint)
 
 		ED_CallSpawn (ent);
 	}	
+
+	//VectorSet(level.stagingPos[0], -47, -431, 24);
+	//VectorSet(level.stagingPos[1], -44, -431, 24);
+	//VectorSet(level.stagingPos[2], 103, -327, 24);
+	//VectorSet(level.stagingPos[3], 103, -174, 0);
+
+	//for (j = 0; j < 4; j++) {
+	//	marker = G_Spawn();
+	//	VectorCopy(level.stagingPos[j], marker->s.origin);
+	//	marker->movetype = MOVETYPE_NONE;
+	//	marker->solid = SOLID_NOT;
+	//	marker->classname = "staging_marker";
+
+	//	// Use a model to visualize it in-game
+	//	marker->s.modelindex = gi.modelindex("models/items/armor/body/tris.md2");
+
+	//	// Make it visible
+	//	marker->s.effects = EF_COLOR_SHELL; // Optional glow
+	//	marker->s.renderfx = RF_FULLBRIGHT;
+
+	//	gi.linkentity(marker);
+
+	//	gi.dprintf("Spawned marker at %f %f %f\n", level.stagingPos[i][0], level.stagingPos[i][1], level.stagingPos[i][2]);
+
+	//}
 
 	gi.dprintf ("%i entities inhibited\n", inhibit);
 

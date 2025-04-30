@@ -786,8 +786,8 @@ void Touch_Item (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf
 	}
 
 	// Otherwise, fallback to default pickup (too much in inventory)
-	if (ent->item->pickup && !ent->item->pickup(ent, other))
-		return;
+	//if (ent->item->pickup && !ent->item->pickup(ent, other))
+		//return;
 
 
 	/*if (!ent->item->pickup)
@@ -1878,7 +1878,7 @@ gives +1 to maximum health
 		NULL,
 		0,
 /* precache */ "", 
-		0
+		100
 	},
 
 /*QUAKED item_bandolier (.3 .3 1) (-16 -16 -16) (16 16 16)
@@ -2176,7 +2176,7 @@ tank commander's head
 		NULL,
 		0,
 /* precache */ "items/s_health.wav items/n_health.wav items/l_health.wav items/m_health.wav", 
-		0
+		100
 	},
 
 	// end of list marker

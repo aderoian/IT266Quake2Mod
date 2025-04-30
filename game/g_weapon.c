@@ -455,7 +455,6 @@ static void Grenade_Explode (edict_t *ent)
 	edict_t* monster;
 	vec3_t dist;
 
-	Com_Printf("Grenade think: time: %f delay: %f", level.time, ent->delay);
 	// Noise maker
 	if (level.time > ent->delay)
 	{

@@ -1873,7 +1873,7 @@ void ClientBeginServerFrame (edict_t *ent)
 		gi.WriteString(layout);
 		gi.unicast(ent, true);*/
 
-		Com_sprintf(layout, sizeof(layout), "xv 50 yv 164 string2 \" kills     goals    secrets\" ");
+		//Com_sprintf(layout, sizeof(layout), "xv 50 yv 164 string2 \" kills     goals    secrets\" ");
 		gi.dprintf("layout string: %s\n", layout);
 		gi.WriteByte(svc_layout);
 		gi.WriteString(layout);

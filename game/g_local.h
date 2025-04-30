@@ -258,7 +258,7 @@ typedef struct gitem_s
 	int			tag;
 
 	char		*precaches;		// string of all models, sounds, and images this item will use
-	int			value;			// for cash items, how much is it worth
+	int			value;			// for items, how much is it worth
 } gitem_t;
 
 
@@ -339,6 +339,9 @@ typedef struct
 	int			body_que;			// dead bodies
 
 	int			power_cubes;		// ugly necessity for coop
+
+	qboolean	staging;	
+	vec3_t		stagingPos[4];
 } level_locals_t;
 
 
@@ -871,6 +874,7 @@ typedef struct
 	qboolean	hasBackpack;
 	int			numInventoryItems;
 	gitem_t*	itemInventory[MAX_INVENTORY];
+	int 		balance;
 } client_persistant_t;
 
 // client data that stays across deathmatch respawns

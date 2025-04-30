@@ -970,7 +970,23 @@ void Cmd_GiveBatteryPack_f(edict_t* ent) {
 }
 
 void InventoryItem_Think(edict_t* ent) {
+	gitem_t* item;
+
 	ent->touch = Touch_Item;
+
+	if (!level.staging) return;
+	// Check if the item is in the staging pos
+	if (ent->s.origin[0] > level.stagingPos[0][0] && ent->s.origin[0] < level.stagingPos[2][0] &&
+		ent->s.origin[1] > level.stagingPos[0][1] && ent->s.origin[1] < level.stagingPos[2][1]) {
+		ent->think = G_FreeEdict;
+		ent->nextthink = level.time + 0.1;
+
+		item = ent->item;
+		ent->client->pers.balance += item->value;
+	}
+	else {
+		ent->nextthink = level.time + 1.0;
+	}
 }
 
 void Cmd_ThrowItem_f(edict_t* ent)
@@ -978,9 +994,39 @@ void Cmd_ThrowItem_f(edict_t* ent)
 	edict_t* dropped;
 	gitem_t* item;
 	char* model;
+	int j;
+	edict_t* marker;
 
 	if (ent->client->pers.numInventoryItems<= 0)
 		return; // nothing to throw
+
+	if (!level.staging) {
+		VectorSet(level.stagingPos[0], -47, -431, 24);
+		VectorSet(level.stagingPos[1], 103, -431, 24);
+		VectorSet(level.stagingPos[2], 100, -318, 24);
+		VectorSet(level.stagingPos[3], -46, -319, 24);
+
+		for (j = 0; j < 4; j++) {
+			marker = G_Spawn();
+			VectorCopy(level.stagingPos[j], marker->s.origin);
+			marker->movetype = MOVETYPE_NONE;
+			marker->solid = SOLID_NOT;
+			marker->classname = "staging_marker";
+
+			// Use a model to visualize it in-game
+			marker->s.modelindex = gi.modelindex("models/items/armor/body/tris.md2");
+
+			// Make it visible
+			marker->s.effects = EF_COLOR_SHELL; // Optional glow
+			marker->s.renderfx = RF_FULLBRIGHT;
+
+			gi.linkentity(marker);
+
+			gi.dprintf("Spawned marker at %f %f %f\n", level.stagingPos[j][0], level.stagingPos[j][1], level.stagingPos[j][2]);
+		}
+
+		level.staging = true;
+	}
 
 	item = ent->client->pers.itemInventory[0];
 
@@ -990,6 +1036,7 @@ void Cmd_ThrowItem_f(edict_t* ent)
 	dropped = G_Spawn();
 	dropped->classname = item->classname;
 	dropped->item = item;
+	dropped->client = ent->client;
 	dropped->spawnflags = DROPPED_ITEM;
 
 	dropped->solid = SOLID_TRIGGER;
@@ -1039,6 +1086,16 @@ void Cmd_SeeInventory_f(edict_t* ent) {
 
 		Com_Printf("%d: Item: %s", i, item->pickup_name);
 	}
+}
+
+void Cmd_MyPos_f(edict_t* ent) {
+	Com_Printf("My position is: (%f, %f, %f)\n", ent->s.origin[0], ent->s.origin[1], ent->s.origin[2]);
+	Com_Printf("My angles are: (%f, %f, %f)\n", ent->s.angles[0], ent->s.angles[1], ent->s.angles[2]);
+	Com_Printf("My velocity is: (%f, %f, %f)\n", ent->velocity[0], ent->velocity[1], ent->velocity[2]);
+}
+
+void Cmd_SeeBal_f(edict_t* ent) {
+	Com_Printf("My balance is: %d\n", ent->client->pers.balance);
 }
 
 
@@ -1141,6 +1198,10 @@ void ClientCommand (edict_t *ent)
 		Cmd_ThrowItem_f(ent);
 	else if (Q_stricmp(cmd, "seeinv") == 0)
 		Cmd_SeeInventory_f(ent);
+	else if (Q_stricmp(cmd, "mypos") == 0)
+		Cmd_MyPos_f(ent);
+	else if (Q_stricmp(cmd, "seebal") == 0)
+		Cmd_SeeBal_f(ent);
 	else	// anything that doesn't match a command will be a chat
 		Cmd_Say_f (ent, false, true);
 }
