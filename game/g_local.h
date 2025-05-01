@@ -869,7 +869,8 @@ typedef struct
 
 	qboolean	hasFlashlight;
 	qboolean	flashlightActive;
-	int			batteryPack[MAX_BATTERYPACK];
+	qboolean    showLight;
+	float			batteryPack[MAX_BATTERYPACK];
 
 	qboolean	hasBackpack;
 	int			numInventoryItems;
@@ -972,9 +973,6 @@ struct gclient_s
 
 	edict_t		*chase_target;		// player we are chasing
 	qboolean	update_chase;		// need to update chase info?
-
-	qboolean	hasFlashlight;
-	qboolean	flashlightActive;
 };
 
 

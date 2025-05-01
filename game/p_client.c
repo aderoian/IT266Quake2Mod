@@ -1562,7 +1562,25 @@ void PrintPmove (pmove_t *pm)
 	Com_Printf ("sv %3i:%i %i\n", pm->cmd.impulse, c1, c2);
 }
 
-static int lastSecond = 0;
+qboolean UseEnergy(edict_t* ent, float amount) {
+	float total = amount;
+	float storage;
+	float taken;
+	for (int i = 0; i < MAX_BATTERYPACK; i++) {
+		storage = ent->client->pers.batteryPack[i];
+		if (storage > 0) {
+			taken = min(storage, total);
+			ent->client->pers.batteryPack[i] -= taken;
+			total -= taken;
+		}
+
+		if (total <= 0) {
+			return true;
+		}
+	}
+
+	return false;
+}
 
 /*
 ==============
@@ -1579,7 +1597,8 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 	int		i, j;
 	pmove_t	pm;
 	vec3_t start, forward, end;
-	qboolean showLight = true;
+	qboolean showLight;
+	int time;
 
 	level.current_entity = ent;
 	client = ent->client;
@@ -1751,20 +1770,16 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 
 	
 	// TODO: Battery pack tool
-	if (client->hasFlashlight) {
+	//Com_Printf("Has flashlight: %s\n", client->pers.hasFlashlight ? "true" : "false");
+	time = level.time * 10;
+	Com_Printf("Time: %f\nTime New: %d", level.time * 10, time);
+	if (client->pers.hasFlashlight) {
 		if (ucmd->impulse == 50) {
-			client->flashlightActive = !client->flashlightActive;
+			client->pers.flashlightActive = !client->pers.flashlightActive;
 		}
 
-		if (client->flashlightActive) {
-
-			if (((int)level.time) - lastSecond >= 5) {
-				if (!UseEnergy(ent, 5)) {
-					showLight = false;
-				}
-			}
-
-			if (showLight) {
+		if (client->pers.flashlightActive) {
+			if (UseEnergy(ent, 0.1)) {
 
 				// Get forward vector
 				AngleVectors(ent->client->v_angle, forward, NULL, NULL);
@@ -1785,8 +1800,6 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 			}
 		}
 	}
-
-	lastSecond = (int)level.time;
 }
 
 
@@ -1874,7 +1887,7 @@ void ClientBeginServerFrame (edict_t *ent)
 		gi.unicast(ent, true);*/
 
 		//Com_sprintf(layout, sizeof(layout), "xv 50 yv 164 string2 \" kills     goals    secrets\" ");
-		gi.dprintf("layout string: %s\n", layout);
+		//gi.dprintf("layout string: %s\n", layout);
 		gi.WriteByte(svc_layout);
 		gi.WriteString(layout);
 		gi.unicast(ent, true);
@@ -1886,26 +1899,6 @@ static qboolean GiveBatteryPack(edict_t* ent, int size) {
 		if (ent->client->pers.batteryPack[i] == 0) {
 			ent->client->pers.batteryPack[i] = size;
 			gi.cprintf(ent, PRINT_HIGH, "You have received a battery pack of size %d\n", size);
-			return true;
-		}
-	}
-
-	return false;
-}
-
-static qboolean UseEnergy(edict_t* ent, int amount) {
-	int total = amount;
-	int storage;
-	int taken;
-	for (int i = 0; i < MAX_BATTERYPACK; i++) {
-		storage = ent->client->pers.batteryPack[i];
-		if (storage > 0) {
-			taken = min(storage, total);
-			ent->client->pers.batteryPack[i] -= taken;
-			total -= taken;
-		}
-
-		if (total <= 0) {
 			return true;
 		}
 	}

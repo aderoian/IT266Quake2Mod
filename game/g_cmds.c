@@ -959,14 +959,23 @@ void Cmd_GiveFlashlight_f(edict_t* ent) {
 }
 
 void Cmd_ToggleFlshlight_f(edict_t* ent) {
-	ent->client->pers.flashlightActive = !ent->client->flashlightActive;
+	ent->client->pers.flashlightActive = !ent->client->pers.flashlightActive;
 }
 
 void Cmd_GiveBatteryPack_f(edict_t* ent) {
 	int i;
 	for (i = 0; i < MAX_BATTERYPACK; i++) {
-		ent->client->pers.batteryPack[i] = 100;
+		ent->client->pers.batteryPack[i] = 100.0;
 	}
+}
+
+void Cmd_SeeBattery_f(edict_t* ent) {
+	int i;
+	Com_Printf("Battery packs: ");
+	for (i = 0; i < MAX_BATTERYPACK; i++) {
+		Com_Printf("%d: %f\n", i, ent->client->pers.batteryPack[i]);
+	}
+	Com_Printf("\n");
 }
 
 void InventoryItem_Think(edict_t* ent) {
@@ -1188,12 +1197,14 @@ void ClientCommand (edict_t *ent)
 		Cmd_PlayerList_f(ent);
 	else if (Q_stricmp(cmd, "spawnitem") == 0)
 		Cmd_SpawnItem_f(ent);
-	else if (Q_stricmp(cmd, "giveflashlight") == 0)
+	else if (Q_stricmp(cmd, "giveflash") == 0)
 		Cmd_GiveFlashlight_f(ent);
 	else if (Q_stricmp(cmd, "fl") == 0)
 		Cmd_ToggleFlshlight_f(ent);
-	else if (Q_stricmp(cmd, "givebattery") == 0)
+	else if (Q_stricmp(cmd, "givebat") == 0)
 		Cmd_GiveBatteryPack_f(ent);
+	else if (Q_stricmp(cmd, "seebat") == 0)
+		Cmd_SeeBattery_f(ent);
 	else if (Q_stricmp(cmd, "throwitem") == 0)
 		Cmd_ThrowItem_f(ent);
 	else if (Q_stricmp(cmd, "seeinv") == 0)
