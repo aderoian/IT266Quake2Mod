@@ -969,6 +969,10 @@ void Cmd_GiveBatteryPack_f(edict_t* ent) {
 	}
 }
 
+void Cmd_GiveBackpack_f(edict_t* ent) {
+	ent->client->pers.hasBackpack = true;
+}
+
 void Cmd_SeeBattery_f(edict_t* ent) {
 	int i;
 	Com_Printf("Battery packs: ");
@@ -1088,7 +1092,7 @@ void Cmd_SeeInventory_f(edict_t* ent) {
 	gitem_t* item;
 	
 	size = ent->client->pers.numInventoryItems;
-	Com_Printf("Number of items: %d/%d", size, ent->client->pers.hasBackpack ? size : 3);
+	Com_Printf("Number of items: %d/%d", size, ent->client->pers.hasBackpack ? MAX_INVENTORY : 3);
 	for (int i = 0; i < ent->client->pers.numInventoryItems; i++) {
 		item = ent->client->pers.itemInventory[i];
 		if (!item) continue;
@@ -1213,6 +1217,8 @@ void ClientCommand (edict_t *ent)
 		Cmd_MyPos_f(ent);
 	else if (Q_stricmp(cmd, "seebal") == 0)
 		Cmd_SeeBal_f(ent);
+	else if (Q_stricmp(cmd, "giveback") == 0)
+		Cmd_GiveBackpack_f(ent);
 	else	// anything that doesn't match a command will be a chat
 		Cmd_Say_f (ent, false, true);
 }
