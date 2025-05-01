@@ -427,6 +427,26 @@ void monster_think (edict_t *self)
 	M_CatagorizePosition (self);
 	M_WorldEffects (self);
 	M_SetEffects (self);
+
+	if (self->enemy && self->enemy->classname &&
+		strcmp(self->enemy->classname, "noise_maker") == 0)
+	{
+		if (level.time > self->distraction_end)
+		{
+			// Stop being distracted
+			if (self->last_real_enemy && self->last_real_enemy->inuse)
+			{
+				self->enemy = self->last_real_enemy;
+			}
+			else
+			{
+				self->enemy = NULL;
+			}
+
+			self->last_real_enemy = NULL;
+			self->distraction_end = 0;
+		}
+	}
 }
 
 

@@ -651,6 +651,7 @@ char	*vtos (vec3_t v);
 
 float vectoyaw (vec3_t vec);
 void vectoangles (vec3_t vec, vec3_t angles);
+float VectorDistance(vec3_t v1, vec3_t v2);
 
 //
 // g_combat.c
@@ -734,6 +735,7 @@ void fire_shotgun (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int k
 void fire_blaster (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int speed, int effect, qboolean hyper);
 void fire_grenade (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int speed, float timer, float damage_radius);
 void fire_grenade2 (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int speed, float timer, float damage_radius, qboolean held);
+void fire_noisemaker(edict_t* self, vec3_t start, vec3_t aimdir);
 void fire_rocket (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed, float damage_radius, int radius_damage);
 void fire_rail (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int kick);
 void fire_bfg (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed, float damage_radius);
@@ -876,6 +878,7 @@ typedef struct
 	int			numInventoryItems;
 	gitem_t*	itemInventory[MAX_INVENTORY];
 	int 		balance;
+	int			tool;
 } client_persistant_t;
 
 // client data that stays across deathmatch respawns
@@ -1123,5 +1126,8 @@ struct edict_s
 	// common data blocks
 	moveinfo_t		moveinfo;
 	monsterinfo_t	monsterinfo;
+
+	edict_t* last_real_enemy;    // Who they were chasing before distraction
+	float    distraction_end;	// When the distraction ends
 };
 

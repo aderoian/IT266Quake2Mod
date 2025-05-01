@@ -607,6 +607,41 @@ void fire_grenade2 (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int 
 	}
 }
 
+void noise_maker_think(edict_t* self);
+
+void fire_noisemaker(edict_t* self, vec3_t start, vec3_t aimdir) {
+	edict_t* noise;
+	vec3_t	dir;
+	vec3_t	forward, right, up;
+
+	vectoangles(aimdir, dir);
+	AngleVectors(dir, forward, right, up);
+
+	noise = G_Spawn();
+	VectorCopy(start, noise->s.origin);
+	VectorScale(aimdir, 600, noise->velocity);
+	VectorMA(noise->velocity, 200 + crandom() * 10.0, up, noise->velocity);
+	VectorMA(noise->velocity, crandom() * 10.0, right, noise->velocity);
+	VectorSet(noise->avelocity, 300, 300, 300);
+	noise->movetype = MOVETYPE_BOUNCE;
+	noise->clipmask = MASK_SHOT;
+	noise->solid = SOLID_BBOX;
+	noise->s.effects |= EF_GRENADE;
+	VectorClear(noise->mins);
+	VectorClear(noise->maxs);
+	noise->s.modelindex = gi.modelindex("models/objects/grenade/tris.md2");
+	noise->owner = self;
+	noise->delay = level.time + 30.0f;
+	noise->nextthink = level.time + 0.5f;
+	noise->think = noise_maker_think;
+	noise->takedamage = DAMAGE_YES;
+	noise->health = 20;
+	noise->die = G_FreeEdict;
+	noise->classname = "noise_maker";
+
+	gi.linkentity(noise);
+}
+
 
 /*
 =================
@@ -960,4 +995,50 @@ void fire_bfg (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed, f
 		check_dodge (self, bfg->s.origin, dir, speed);
 
 	gi.linkentity (bfg);
+}
+
+void noise_maker_think(edict_t* self)
+{
+	edict_t* monster;
+	int i;
+
+	if (level.time > self->delay)
+	{
+		G_FreeEdict(self);
+		return;
+	}
+
+	// Play the noise sound
+	gi.sound(self, CHAN_VOICE, gi.soundindex("world/land1.wav"), 1, ATTN_NORM, 0);
+
+	// Alert nearby monsters
+	for (i = 1; i < globals.num_edicts; i++)
+	{
+		monster = &g_edicts[i];
+
+		if (!monster->inuse || !(monster->svflags & SVF_MONSTER) || monster->health <= 0)
+			continue;
+
+		// Already distracted? Don't keep redoing it
+		if (monster->enemy == self)
+			continue;
+
+		// Only distract if within range
+
+		if (VectorDistance(monster->s.origin, self->s.origin) > 600)
+			continue;
+
+		// Save their original enemy
+		if (monster->enemy && monster->enemy != self)
+			monster->last_real_enemy = monster->enemy;
+
+		// Force target to be noise maker
+		monster->enemy = self;
+		monster->distraction_end = level.time + 5.0f; // Be distracted for 5 seconds
+
+		// Force re-evaluation of AI state
+		FoundTarget(monster);  // Trick AI into treating the noise maker like a real enemy
+	}
+
+	self->nextthink = level.time + 0.3f + random() * 0.4f;
 }

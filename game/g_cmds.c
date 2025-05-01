@@ -1111,6 +1111,10 @@ void Cmd_SeeBal_f(edict_t* ent) {
 	Com_Printf("My balance is: %d\n", ent->client->pers.balance);
 }
 
+void Cmd_SetTool_f(edict_t* ent, int tool) {
+	ent->client->pers.tool = tool;
+}
+
 
 /*
 =================
@@ -1219,6 +1223,11 @@ void ClientCommand (edict_t *ent)
 		Cmd_SeeBal_f(ent);
 	else if (Q_stricmp(cmd, "giveback") == 0)
 		Cmd_GiveBackpack_f(ent);
+	else if (Q_stricmp(cmd, "settool") == 0)
+	{
+		int tool = atoi(gi.argv(1));
+		Cmd_SetTool_f(ent, tool);
+	}
 	else	// anything that doesn't match a command will be a chat
 		Cmd_Say_f (ent, false, true);
 }

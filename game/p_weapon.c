@@ -818,6 +818,7 @@ void Blaster_Fire (edict_t *ent, vec3_t g_offset, int damage, qboolean hyper, in
 	vec3_t	forward, right;
 	vec3_t	start;
 	vec3_t	offset;
+	int tool;
 
 	if (is_quad)
 		damage *= 4;
@@ -829,7 +830,13 @@ void Blaster_Fire (edict_t *ent, vec3_t g_offset, int damage, qboolean hyper, in
 	VectorScale (forward, -2, ent->client->kick_origin);
 	ent->client->kick_angles[0] = -1;
 
-	fire_blaster (ent, start, forward, damage, 1000, effect, hyper);
+	tool = ent->client->pers.tool;
+	if (tool == 0) {
+		fire_blaster(ent, start, forward, damage, 1000, effect, hyper);
+	}
+	else if (tool == 1) {
+		fire_noisemaker(ent, start, forward);
+	}
 
 	// send muzzle flash
 	gi.WriteByte (svc_muzzleflash);
