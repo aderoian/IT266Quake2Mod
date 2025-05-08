@@ -631,7 +631,7 @@ void fire_noisemaker(edict_t* self, vec3_t start, vec3_t aimdir) {
 	VectorClear(noise->maxs);
 	noise->s.modelindex = gi.modelindex("models/objects/grenade/tris.md2");
 	noise->owner = self;
-	noise->delay = level.time + 30.0f;
+	noise->delay = level.time + 6.0f;
 	noise->nextthink = level.time + 0.5f;
 	noise->think = noise_maker_think;
 	noise->takedamage = DAMAGE_YES;
@@ -1016,7 +1016,7 @@ void noise_maker_think(edict_t* self)
 	{
 		monster = &g_edicts[i];
 
-		if (!monster->inuse || !(monster->svflags & SVF_MONSTER) || monster->health <= 0)
+		if (!monster->inuse || !(monster->svflags & SVF_MONSTER) || monster->health <= 0 || monster->distraction_end <= 0)
 			continue;
 
 		// Already distracted? Don't keep redoing it

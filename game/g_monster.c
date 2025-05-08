@@ -536,6 +536,14 @@ void monster_think (edict_t *self)
 			if (self->last_real_enemy && self->last_real_enemy->inuse)
 			{
 				self->enemy = self->last_real_enemy;
+				self->last_real_enemy = NULL;
+				self->distraction_end = 0;
+
+				// Clear distraction-related AI flags (if any were set)
+				self->monsterinfo.aiflags &= ~AI_SOUND_TARGET;
+
+				// Make sure monster is back in combat state
+				self->monsterinfo.run(self);  // Forces pursuit
 			}
 			else
 			{
