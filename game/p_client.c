@@ -1890,15 +1890,3 @@ void ClientBeginServerFrame (edict_t *ent)
 		gi.unicast(ent, true);
 	}
 }
-
-static qboolean GiveBatteryPack(edict_t* ent, int size) {
-	for (int i = 0; i < MAX_BATTERYPACK; i++) {
-		if (ent->client->pers.batteryPack[i] == 0) {
-			ent->client->pers.batteryPack[i] = size;
-			gi.cprintf(ent, PRINT_HIGH, "You have received a battery pack of size %d\n", size);
-			return true;
-		}
-	}
-
-	return false;
-}

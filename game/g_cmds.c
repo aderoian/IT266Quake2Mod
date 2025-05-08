@@ -1111,10 +1111,108 @@ void Cmd_SeeBal_f(edict_t* ent) {
 	Com_Printf("My balance is: %d\n", ent->client->pers.balance);
 }
 
+void Cmd_SetBalance_f(edict_t* ent) {
+	int amount;
+
+	if (gi.argc() < 2) {
+		gi.cprintf(ent, PRINT_HIGH, "Usage: setbalance <amount>\n");
+		return;
+	}
+
+	amount = atoi(gi.argv(1));
+	ent->client->pers.balance = amount;
+}
+
 void Cmd_SetTool_f(edict_t* ent, int tool) {
 	ent->client->pers.tool = tool;
 }
 
+void Cmd_ShowStats_f(edict_t* ent) {
+	gi.centerprintf(ent, "Balance: %d\n", ent->client->pers.balance);
+}
+
+void Cmd_ShowHelp_f(edict_t* ent) {
+	gi.centerprintf(ent,
+		"Help:\n"
+		"Goal: Navigate the level and pick up\n"
+		"collectables on the ground.\n"
+		"Bring them to the staging area to sell.\n"
+		"Staging area is near the level start.\n"
+		"(Press 'X' to drop items)\n"
+		"\n"
+		"Inventory full? Buy a backpack (press '1')\n"
+		"\n"
+		"Can't see? Buy a flashlight (press '2')\n"
+		"Toggle flashlight using 'F'\n"
+		"Out of power? Buy batteries (press '3')\n"
+		"\n"
+		"Tired of monsters? Buy a noisemaker (4)\n"
+		"Switch to it with '6', left-click to use\n"
+		"It will distract monsters for a while!"
+	);
+}
+
+qboolean GiveBatteryPack(edict_t* ent, int size, int amount);
+void GiveItem(edict_t* ent, char * name, int count);
+
+void Cmd_BuyFlashlight_f(edict_t* ent) {
+	int cost = 500;
+
+	if (ent->client->pers.hasFlashlight) {
+		gi.centerprintf(ent, "You already have a flashlight!\n");
+		return;
+	}
+
+	if (ent->client->pers.balance < cost) {
+		gi.centerprintf(ent, "Not enough money!\n");
+		return;
+	}
+
+	ent->client->pers.balance -= cost;
+	ent->client->pers.hasFlashlight = true;
+	GiveBatteryPack(ent, 100, 1);
+	gi.centerprintf(ent, "Flashlight purchased!\n");
+}
+
+void Cmd_BuyBatteryPack_f(edict_t* ent) {
+	int cost = 100;
+	if (ent->client->pers.balance < cost) {
+		gi.centerprintf(ent, "Not enough money!\n");
+		return;
+	}
+	ent->client->pers.balance -= cost;
+	GiveBatteryPack(ent, 100, 1);
+	gi.centerprintf(ent, "Battery pack purchased!\n");
+}
+
+void Cmd_BuyBackpack_f(edict_t* ent) {
+	int cost = 1000;
+	if (ent->client->pers.hasBackpack) {
+		gi.centerprintf(ent, "You already have a backpack!\n");
+		return;
+	}
+	if (ent->client->pers.balance < cost) {
+		gi.centerprintf(ent, "Not enough money!\n");
+		return;
+	}
+	ent->client->pers.balance -= cost;
+	ent->client->pers.hasBackpack = true;
+	gi.centerprintf(ent, "Backpack purchased!\n");
+}
+
+void Cmd_BuyNoisemaker_f(edict_t* ent) {
+	int cost = 1000;
+	if (ent->client->pers.balance < cost) {
+		gi.centerprintf(ent, "Not enough money!\n");
+		return;
+	}
+	ent->client->pers.balance -= cost;
+	gi.centerprintf(ent, "Noisemaker purchased!\n");
+
+	//give player grenadelauncher and 1 grenade
+	GiveItem(ent, "Grenade Launcher", 1);
+	GiveItem(ent, "grenades", 1);
+}
 
 /*
 =================
@@ -1221,6 +1319,8 @@ void ClientCommand (edict_t *ent)
 		Cmd_MyPos_f(ent);
 	else if (Q_stricmp(cmd, "seebal") == 0)
 		Cmd_SeeBal_f(ent);
+	else if (Q_stricmp(cmd, "setbal") == 0)
+		Cmd_SetBalance_f(ent);
 	else if (Q_stricmp(cmd, "giveback") == 0)
 		Cmd_GiveBackpack_f(ent);
 	else if (Q_stricmp(cmd, "settool") == 0)
@@ -1228,6 +1328,82 @@ void ClientCommand (edict_t *ent)
 		int tool = atoi(gi.argv(1));
 		Cmd_SetTool_f(ent, tool);
 	}
+	else if (Q_stricmp(cmd, "showstats") == 0) {
+		Cmd_ShowStats_f(ent);
+	}
+	else if (Q_stricmp(cmd, "showhelp") == 0) {
+		Cmd_ShowHelp_f(ent);
+	}
+	else if (Q_stricmp(cmd, "buyflashlight") == 0) {
+		Cmd_BuyFlashlight_f(ent);
+	}
+	else if (Q_stricmp(cmd, "buybackpack") == 0) {
+		Cmd_BuyBackpack_f(ent);
+	}
+	else if (Q_stricmp(cmd, "buybattery") == 0) {
+		Cmd_BuyBatteryPack_f(ent);
+	}
+	else if (Q_stricmp(cmd, "buynoisemaker") == 0) {
+		Cmd_BuyNoisemaker_f(ent);
+	}
 	else	// anything that doesn't match a command will be a chat
 		Cmd_Say_f (ent, false, true);
+}
+
+qboolean GiveBatteryPack(edict_t* ent, int size, int amount) {
+	float minVal;
+	int minIndx;
+	for (int i = 0; i < min(MAX_BATTERYPACK, amount); i++) {
+		minVal = size;
+		minIndx = 0;
+		for (int j = 0; j < MAX_BATTERYPACK; j++) {
+			if (ent->client->pers.batteryPack[j] < minVal) {
+				minIndx = j;
+			}
+		}
+
+		ent->client->pers.batteryPack[minIndx] = size;
+		return true;
+	}
+
+	return false;
+}
+
+void GiveItem(edict_t* ent, char* name, int count) {
+	edict_t* it_ent;
+	gitem_t* it;
+	int index;
+
+	it = FindItem(name);
+	if (!it)
+	{
+		it = FindItem(name);
+		if (!it)
+		{
+			gi.cprintf(ent, PRINT_HIGH, "unknown item: %s\n", name);
+			return;
+		}
+	}
+
+	if (!it->pickup)
+	{
+		gi.cprintf(ent, PRINT_HIGH, "Item is not pickable.\n");
+		return;
+	}
+
+	index = ITEM_INDEX(it);
+
+	if (it->flags & IT_AMMO)
+	{
+		ent->client->pers.inventory[index] = count;
+	}
+	else
+	{
+		it_ent = G_Spawn();
+		it_ent->classname = it->classname;
+		SpawnItem(it_ent, it);
+		Touch_Item(it_ent, ent, NULL, NULL);
+		if (it_ent->inuse)
+			G_FreeEdict(it_ent);
+	}
 }
