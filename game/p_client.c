@@ -1598,7 +1598,6 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 	pmove_t	pm;
 	vec3_t start, forward, end;
 	qboolean showLight;
-	int time;
 
 	level.current_entity = ent;
 	client = ent->client;
@@ -1771,8 +1770,6 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 	
 	// TODO: Battery pack tool
 	//Com_Printf("Has flashlight: %s\n", client->pers.hasFlashlight ? "true" : "false");
-	time = level.time * 10;
-	Com_Printf("Time: %f\nTime New: %d", level.time * 10, time);
 	if (client->pers.hasFlashlight) {
 		if (ucmd->impulse == 50) {
 			client->pers.flashlightActive = !client->pers.flashlightActive;
