@@ -1043,8 +1043,6 @@ void Cmd_ThrowItem_f(edict_t* ent)
 
 	item = ent->client->pers.itemInventory[0];
 
-	Com_Printf("Throwing item: %s\n", item->pickup_name);
-
 	// Spawn the item entity back into the world
 	dropped = G_Spawn();
 	dropped->classname = item->classname;
@@ -1084,6 +1082,7 @@ void Cmd_ThrowItem_f(edict_t* ent)
 	for (int i = 1; i < ent->client->pers.numInventoryItems; i++) {
 		ent->client->pers.itemInventory[i - 1] = ent->client->pers.itemInventory[i];
 	}
+	ent->client->pers.itemInventory[ent->client->pers.numInventoryItems - 1] = NULL;
 	ent->client->pers.numInventoryItems--;
 }
 
