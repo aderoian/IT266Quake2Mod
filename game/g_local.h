@@ -259,6 +259,7 @@ typedef struct gitem_s
 
 	char		*precaches;		// string of all models, sounds, and images this item will use
 	int			value;			// for items, how much is it worth
+	char* viewName;
 } gitem_t;
 
 

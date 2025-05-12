@@ -231,16 +231,16 @@ void DeathmatchScoreboardMessage (edict_t *ent, edict_t *killer)
 		ent->client->pers.hasBackpack ? "Yes" : "No",
 		bat,
 		bal,
-		ent->client->pers.itemInventory[0] ? ent->client->pers.itemInventory[0]->pickup_name : "",
-		ent->client->pers.itemInventory[1] ? ent->client->pers.itemInventory[1]->pickup_name : "",
-		ent->client->pers.itemInventory[2] ? ent->client->pers.itemInventory[2]->pickup_name : "",
-		ent->client->pers.itemInventory[3] ? ent->client->pers.itemInventory[3]->pickup_name : "",
-		ent->client->pers.itemInventory[4] ? ent->client->pers.itemInventory[4]->pickup_name : "",
-		ent->client->pers.itemInventory[5] ? ent->client->pers.itemInventory[5]->pickup_name : "",
-		ent->client->pers.itemInventory[6] ? ent->client->pers.itemInventory[6]->pickup_name : "",
-		ent->client->pers.itemInventory[7] ? ent->client->pers.itemInventory[7]->pickup_name : "",
-		ent->client->pers.itemInventory[8] ? ent->client->pers.itemInventory[8]->pickup_name : "",
-		ent->client->pers.itemInventory[9] ? ent->client->pers.itemInventory[9]->pickup_name : ""
+		ent->client->pers.itemInventory[0] ? (ent->client->pers.itemInventory[0]->viewName ? ent->client->pers.itemInventory[0]->viewName : ent->client->pers.itemInventory[0]->pickup_name) : "",
+		ent->client->pers.itemInventory[1] ? (ent->client->pers.itemInventory[1]->viewName ? ent->client->pers.itemInventory[1]->viewName : ent->client->pers.itemInventory[1]->pickup_name) : "",
+		ent->client->pers.itemInventory[2] ? (ent->client->pers.itemInventory[2]->viewName ? ent->client->pers.itemInventory[2]->viewName : ent->client->pers.itemInventory[2]->pickup_name) : "",
+		ent->client->pers.itemInventory[3] ? (ent->client->pers.itemInventory[3]->viewName ? ent->client->pers.itemInventory[3]->viewName : ent->client->pers.itemInventory[3]->pickup_name) : "",
+		ent->client->pers.itemInventory[4] ? (ent->client->pers.itemInventory[4]->viewName ? ent->client->pers.itemInventory[4]->viewName : ent->client->pers.itemInventory[4]->pickup_name) : "",
+		ent->client->pers.itemInventory[5] ? (ent->client->pers.itemInventory[5]->viewName ? ent->client->pers.itemInventory[5]->viewName : ent->client->pers.itemInventory[5]->pickup_name) : "",
+		ent->client->pers.itemInventory[6] ? (ent->client->pers.itemInventory[6]->viewName ? ent->client->pers.itemInventory[6]->viewName : ent->client->pers.itemInventory[6]->pickup_name) : "",
+		ent->client->pers.itemInventory[7] ? (ent->client->pers.itemInventory[7]->viewName ? ent->client->pers.itemInventory[7]->viewName : ent->client->pers.itemInventory[7]->pickup_name) : "",
+		ent->client->pers.itemInventory[8] ? (ent->client->pers.itemInventory[8]->viewName ? ent->client->pers.itemInventory[8]->viewName : ent->client->pers.itemInventory[8]->pickup_name) : "",
+		ent->client->pers.itemInventory[9] ? (ent->client->pers.itemInventory[9]->viewName ? ent->client->pers.itemInventory[9]->viewName : ent->client->pers.itemInventory[9]->pickup_name) : ""
 	);
 
 	/*strcat(layout, "=== INVENTORY ===\n");

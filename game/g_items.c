@@ -1186,7 +1186,8 @@ gitem_t	itemlist[] =
 		&bodyarmor_info,
 		ARMOR_BODY,
 /* precache */ "",
-		0
+		15,
+		"Smelly Clothes"
 	},
 
 /*QUAKED item_armor_combat (.3 .3 1) (-16 -16 -16) (16 16 16)
@@ -1210,7 +1211,8 @@ gitem_t	itemlist[] =
 		&combatarmor_info,
 		ARMOR_COMBAT,
 /* precache */ "",
-		0
+		20,
+		"Torn Clothes"
 	},
 
 /*QUAKED item_armor_jacket (.3 .3 1) (-16 -16 -16) (16 16 16)
@@ -1234,7 +1236,8 @@ gitem_t	itemlist[] =
 		&jacketarmor_info,
 		ARMOR_JACKET,
 /* precache */ "", 
-		0
+		100,
+		"Old Clothes"
 	},
 
 /*QUAKED item_armor_shard (.3 .3 1) (-16 -16 -16) (16 16 16)
@@ -1258,7 +1261,8 @@ gitem_t	itemlist[] =
 		NULL,
 		ARMOR_SHARD,
 /* precache */ "", 
-		0
+		50,
+		"De-energized Crystal"
 	},
 
 
@@ -1283,7 +1287,8 @@ gitem_t	itemlist[] =
 		NULL,
 		0,
 /* precache */ "", 
-		0
+		250,
+		"Computer Monitor"
 	},
 
 /*QUAKED item_power_shield (.3 .3 1) (-16 -16 -16) (16 16 16)
@@ -1307,7 +1312,8 @@ gitem_t	itemlist[] =
 		NULL,
 		0,
 /* precache */ "misc/power2.wav misc/power1.wav", 
-		0
+		500,
+		"Futuristic Energy Source"
 	},
 
 
@@ -1337,7 +1343,8 @@ always owned, never in the world
 		NULL,
 		0,
 /* precache */ "weapons/blastf1a.wav misc/lasfly.wav", 
-		0
+		0,
+		NULL
 	},
 
 /*QUAKED weapon_shotgun (.3 .3 1) (-16 -16 -16) (16 16 16)
@@ -1361,7 +1368,8 @@ always owned, never in the world
 		NULL,
 		0,
 /* precache */ "weapons/shotgf1b.wav weapons/shotgr1b.wav", 
-		0
+		1000,
+		"Ancient Shotgun"
 	},
 
 /*QUAKED weapon_supershotgun (.3 .3 1) (-16 -16 -16) (16 16 16)
@@ -1385,7 +1393,8 @@ always owned, never in the world
 		NULL,
 		0,
 /* precache */ "weapons/sshotf1b.wav", 
-		0
+		2000,
+		"Futuristic Shotgun"
 	},
 
 /*QUAKED weapon_machinegun (.3 .3 1) (-16 -16 -16) (16 16 16)
@@ -1409,7 +1418,8 @@ always owned, never in the world
 		NULL,
 		0,
 /* precache */ "weapons/machgf1b.wav weapons/machgf2b.wav weapons/machgf3b.wav weapons/machgf4b.wav weapons/machgf5b.wav", 
-		0
+		0,
+		NULL
 	},
 
 /*QUAKED weapon_chaingun (.3 .3 1) (-16 -16 -16) (16 16 16)
@@ -1433,7 +1443,8 @@ always owned, never in the world
 		NULL,
 		0,
 /* precache */ "weapons/chngnu1a.wav weapons/chngnl1a.wav weapons/machgf3b.wav` weapons/chngnd1a.wav", 
-		0
+		0,
+		NULL
 	},
 
 /*QUAKED ammo_grenades (.3 .3 1) (-16 -16 -16) (16 16 16)
@@ -1457,7 +1468,8 @@ always owned, never in the world
 		NULL,
 		AMMO_GRENADES,
 /* precache */ "weapons/hgrent1a.wav weapons/hgrena1b.wav weapons/hgrenc1b.wav weapons/hgrenb1a.wav weapons/hgrenb2a.wav ", 
-		0
+		250,
+		"Box of Bottles"
 	},
 
 /*QUAKED weapon_grenadelauncher (.3 .3 1) (-16 -16 -16) (16 16 16)
@@ -1481,7 +1493,8 @@ always owned, never in the world
 		NULL,
 		0,
 /* precache */ "models/objects/grenade/tris.md2 weapons/grenlf1a.wav weapons/grenlr1b.wav weapons/grenlb1b.wav", 
-		0
+		0,
+		NULL
 	},
 
 /*QUAKED weapon_rocketlauncher (.3 .3 1) (-16 -16 -16) (16 16 16)
@@ -1505,7 +1518,8 @@ always owned, never in the world
 		NULL,
 		0,
 /* precache */ "models/objects/rocket/tris.md2 weapons/rockfly.wav weapons/rocklf1a.wav weapons/rocklr1b.wav models/objects/debris2/tris.md2", 
-		0
+		0,
+		NULL
 	},
 
 /*QUAKED weapon_hyperblaster (.3 .3 1) (-16 -16 -16) (16 16 16)
@@ -1529,7 +1543,8 @@ always owned, never in the world
 		NULL,
 		0,
 /* precache */ "weapons/hyprbu1a.wav weapons/hyprbl1a.wav weapons/hyprbf1a.wav weapons/hyprbd1a.wav misc/lasfly.wav", 
-		0
+		0,
+		NULL
 	},
 
 /*QUAKED weapon_railgun (.3 .3 1) (-16 -16 -16) (16 16 16)
@@ -1553,7 +1568,8 @@ always owned, never in the world
 		NULL,
 		0,
 /* precache */ "weapons/rg_hum.wav", 
-		0
+		0,
+		NULL
 	},
 
 /*QUAKED weapon_bfg (.3 .3 1) (-16 -16 -16) (16 16 16)
@@ -1577,7 +1593,8 @@ always owned, never in the world
 		NULL,
 		0,
 /* precache */ "sprites/s_bfg1.sp2 sprites/s_bfg2.sp2 sprites/s_bfg3.sp2 weapons/bfg__f1y.wav weapons/bfg__l1a.wav weapons/bfg__x1b.wav weapons/bfg_hum.wav", 
-		0
+		0,
+		NULL
 	},
 
 	//
@@ -1605,7 +1622,8 @@ always owned, never in the world
 		NULL,
 		AMMO_SHELLS,
 /* precache */ "", 
-		0
+		750,
+		"Box of Gears"
 	},
 
 /*QUAKED ammo_bullets (.3 .3 1) (-16 -16 -16) (16 16 16)
@@ -1629,7 +1647,8 @@ always owned, never in the world
 		NULL,
 		AMMO_BULLETS,
 /* precache */ "",
-		0
+		4000,
+		"Box of Energy Cells"
 	},
 	
 
@@ -1654,7 +1673,8 @@ always owned, never in the world
 		NULL,
 		AMMO_CELLS,
 /* precache */ "",
-		0
+		6000,
+		"Box of Energized Crystals"
 	},
 	
 
@@ -1679,7 +1699,8 @@ always owned, never in the world
 		NULL,
 		AMMO_ROCKETS,
 /* precache */ "",
-		0
+		300,
+		"Box of Missiles"
 	},
 	
 
@@ -1704,7 +1725,8 @@ always owned, never in the world
 		NULL,
 		AMMO_SLUGS,
 /* precache */ "",
-		0
+		100,
+		"Box of Junk"
 	},
 	
 
@@ -1732,7 +1754,8 @@ always owned, never in the world
 		NULL,
 		0,
 /* precache */ "items/damage.wav items/damage2.wav items/damage3.wav", 
-		0
+		0,
+		NULL
 	},
 
 /*QUAKED item_invulnerability (.3 .3 1) (-16 -16 -16) (16 16 16)
@@ -1756,7 +1779,8 @@ always owned, never in the world
 		NULL,
 		0,
 /* precache */ "items/protect.wav items/protect2.wav items/protect4.wav", 
-		0
+		0,
+		NULL
 	},
 
 /*QUAKED item_silencer (.3 .3 1) (-16 -16 -16) (16 16 16)
@@ -1780,7 +1804,8 @@ always owned, never in the world
 		NULL,
 		0,
 /* precache */ "", 
-		0
+		0,
+		NULL
 	},
 
 /*QUAKED item_breather (.3 .3 1) (-16 -16 -16) (16 16 16)
@@ -1804,7 +1829,8 @@ always owned, never in the world
 		NULL,
 		0,
 /* precache */ "items/airout.wav", 
-		0
+		0,
+		NULL
 	},
 
 /*QUAKED item_enviro (.3 .3 1) (-16 -16 -16) (16 16 16)
@@ -1828,7 +1854,8 @@ always owned, never in the world
 		NULL,
 		0,
 /* precache */ "items/airout.wav", 
-		0
+		0,
+		NULL
 	},
 
 /*QUAKED item_ancient_head (.3 .3 1) (-16 -16 -16) (16 16 16)
@@ -1853,7 +1880,8 @@ Special item that gives +2 to maximum health
 		NULL,
 		0,
 /* precache */ "", 
-		0
+		0,
+		NULL
 	},
 
 /*QUAKED item_adrenaline (.3 .3 1) (-16 -16 -16) (16 16 16)
@@ -1878,7 +1906,8 @@ gives +1 to maximum health
 		NULL,
 		0,
 /* precache */ "", 
-		100
+		100,
+		NULL
 	},
 
 /*QUAKED item_bandolier (.3 .3 1) (-16 -16 -16) (16 16 16)
@@ -1902,7 +1931,8 @@ gives +1 to maximum health
 		NULL,
 		0,
 /* precache */ "", 
-		0
+		0,
+		NULL
 	},
 
 /*QUAKED item_pack (.3 .3 1) (-16 -16 -16) (16 16 16)
@@ -1926,7 +1956,8 @@ gives +1 to maximum health
 		NULL,
 		0,
 /* precache */ "", 
-		0
+		0,
+		NULL
 	},
 
 	//
@@ -1954,7 +1985,8 @@ key for computer centers
 		NULL,
 		0,
 /* precache */ "", 
-		0
+		0,
+		NULL
 	},
 
 /*QUAKED key_power_cube (0 .5 .8) (-16 -16 -16) (16 16 16) TRIGGER_SPAWN NO_TOUCH
@@ -1979,7 +2011,8 @@ warehouse circuits
 		NULL,
 		0,
 /* precache */ "", 
-		0
+		0,
+		NULL
 	},
 
 /*QUAKED key_pyramid (0 .5 .8) (-16 -16 -16) (16 16 16)
@@ -2004,7 +2037,8 @@ key for the entrance of jail3
 		NULL,
 		0,
 /* precache */ "", 
-		0
+		0,
+		NULL
 	},
 
 /*QUAKED key_data_spinner (0 .5 .8) (-16 -16 -16) (16 16 16)
@@ -2029,7 +2063,8 @@ key for the city computer
 		NULL,
 		0,
 /* precache */ "", 
-		0
+		0,
+		NULL
 	},
 
 /*QUAKED key_pass (0 .5 .8) (-16 -16 -16) (16 16 16)
@@ -2054,7 +2089,8 @@ security pass for the security level
 		NULL,
 		0,
 /* precache */ "", 
-		0
+		0,
+		NULL
 	},
 
 /*QUAKED key_blue_key (0 .5 .8) (-16 -16 -16) (16 16 16)
@@ -2079,7 +2115,8 @@ normal door key - blue
 		NULL,
 		0,
 /* precache */ "", 
-		0
+		0,
+		NULL
 	},
 
 /*QUAKED key_red_key (0 .5 .8) (-16 -16 -16) (16 16 16)
@@ -2104,7 +2141,8 @@ normal door key - red
 		NULL,
 		0,
 /* precache */ "", 
-		0
+		0,
+		NULL
 	},
 
 /*QUAKED key_commander_head (0 .5 .8) (-16 -16 -16) (16 16 16)
@@ -2129,7 +2167,8 @@ tank commander's head
 		NULL,
 		0,
 /* precache */ "", 
-		0
+		0,
+		NULL
 	},
 
 /*QUAKED key_airstrike_target (0 .5 .8) (-16 -16 -16) (16 16 16)
@@ -2154,7 +2193,8 @@ tank commander's head
 		NULL,
 		0,
 /* precache */ "", 
-		0
+		0,
+		NULL
 	},
 	{
 		NULL,
@@ -2175,7 +2215,8 @@ tank commander's head
 		NULL,
 		0,
 /* precache */ "items/s_health.wav items/n_health.wav items/l_health.wav items/m_health.wav", 
-		100
+		100,
+		NULL
 	},{
 		NULL,
 		Pickup_Health,
@@ -2195,7 +2236,8 @@ tank commander's head
 		NULL,
 		0,
 /* precache */ "items/s_health.wav items/n_health.wav items/l_health.wav items/m_health.wav", 
-		100
+		10,
+		"Energy Cells"
 	},{
 		NULL,
 		Pickup_Health,
@@ -2215,7 +2257,8 @@ tank commander's head
 		NULL,
 		0,
 /* precache */ "items/s_health.wav items/n_health.wav items/l_health.wav items/m_health.wav", 
-		100
+		25,
+		"Crate of Spare Parts"
 	},{
 		NULL,
 		Pickup_Health,
@@ -2235,7 +2278,8 @@ tank commander's head
 		NULL,
 		0,
 /* precache */ "items/s_health.wav items/n_health.wav items/l_health.wav items/m_health.wav", 
-		100
+		75,
+		NULL
 	},{
 		NULL,
 		Pickup_Health,
@@ -2255,7 +2299,8 @@ tank commander's head
 		NULL,
 		0,
 /* precache */ "items/s_health.wav items/n_health.wav items/l_health.wav items/m_health.wav", 
-		100
+		125,
+		NULL
 	},
 
 
