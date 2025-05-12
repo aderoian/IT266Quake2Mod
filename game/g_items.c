@@ -2156,7 +2156,6 @@ tank commander's head
 /* precache */ "", 
 		0
 	},
-
 	{
 		NULL,
 		Pickup_Health,
@@ -2177,7 +2176,88 @@ tank commander's head
 		0,
 /* precache */ "items/s_health.wav items/n_health.wav items/l_health.wav items/m_health.wav", 
 		100
+	},{
+		NULL,
+		Pickup_Health,
+		NULL,
+		NULL,
+		NULL,
+		"items/pkup.wav",
+		"models/items/healing/stimpack/tris.md2", 0,
+		NULL,
+/* icon */		"i_health",
+/* pickup */	"Stimpack",
+/* width */		3,
+		0,
+		NULL,
+		0,
+		0,
+		NULL,
+		0,
+/* precache */ "items/s_health.wav items/n_health.wav items/l_health.wav items/m_health.wav", 
+		100
+	},{
+		NULL,
+		Pickup_Health,
+		NULL,
+		NULL,
+		NULL,
+		"items/pkup.wav",
+		"models/items/healing/medium/tris.md2", 0,
+		NULL,
+/* icon */		"i_health",
+/* pickup */	"Medium Health",
+/* width */		3,
+		0,
+		NULL,
+		0,
+		0,
+		NULL,
+		0,
+/* precache */ "items/s_health.wav items/n_health.wav items/l_health.wav items/m_health.wav", 
+		100
+	},{
+		NULL,
+		Pickup_Health,
+		NULL,
+		NULL,
+		NULL,
+		"items/pkup.wav",
+		"models/items/healing/large/tris.md2", 0,
+		NULL,
+/* icon */		"i_health",
+/* pickup */	"Large Health",
+/* width */		3,
+		0,
+		NULL,
+		0,
+		0,
+		NULL,
+		0,
+/* precache */ "items/s_health.wav items/n_health.wav items/l_health.wav items/m_health.wav", 
+		100
+	},{
+		NULL,
+		Pickup_Health,
+		NULL,
+		NULL,
+		NULL,
+		"items/pkup.wav",
+		"models/items/mega_h/tris.md2", 0,
+		NULL,
+/* icon */		"i_health",
+/* pickup */	"Mega Health",
+/* width */		3,
+		0,
+		NULL,
+		0,
+		0,
+		NULL,
+		0,
+/* precache */ "items/s_health.wav items/n_health.wav items/l_health.wav items/m_health.wav", 
+		100
 	},
+
 
 	// end of list marker
 	{NULL}
@@ -2196,7 +2276,7 @@ void SP_item_health (edict_t *self)
 
 	self->model = "models/items/healing/medium/tris.md2";
 	self->count = 10;
-	SpawnItem (self, FindItem ("Health"));
+	SpawnItem (self, FindItem ("Medium Health"));
 	gi.soundindex ("items/n_health.wav");
 }
 
@@ -2212,7 +2292,7 @@ void SP_item_health_small (edict_t *self)
 
 	self->model = "models/items/healing/stimpack/tris.md2";
 	self->count = 2;
-	SpawnItem (self, FindItem ("Health"));
+	SpawnItem (self, FindItem ("Stimpack"));
 	self->style = HEALTH_IGNORE_MAX;
 	gi.soundindex ("items/s_health.wav");
 }
@@ -2229,7 +2309,7 @@ void SP_item_health_large (edict_t *self)
 
 	self->model = "models/items/healing/large/tris.md2";
 	self->count = 25;
-	SpawnItem (self, FindItem ("Health"));
+	SpawnItem (self, FindItem ("Large Health"));
 	gi.soundindex ("items/l_health.wav");
 }
 
@@ -2245,7 +2325,7 @@ void SP_item_health_mega (edict_t *self)
 
 	self->model = "models/items/mega_h/tris.md2";
 	self->count = 100;
-	SpawnItem (self, FindItem ("Health"));
+	SpawnItem (self, FindItem ("Mega Health"));
 	gi.soundindex ("items/m_health.wav");
 	self->style = HEALTH_IGNORE_MAX|HEALTH_TIMED;
 }
