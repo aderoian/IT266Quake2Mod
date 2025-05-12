@@ -154,6 +154,30 @@ void BeginIntermission (edict_t *targ)
 	}
 }
 
+char* BuildItemList(edict_t* ent) {
+	static char buffer[512];
+	buffer[0] = 0;
+
+	int y = 88;
+	for (int i = 0; i < game.num_items; i++) {
+		if (ent->client->pers.itemInventory[i] > 0) {
+			Com_sprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer),
+				"xv 40 yv %d string \"%s\"\n", y, ent->client->pers.itemInventory[i]->pickup_name);
+			y += 8;
+		}
+	}
+
+	return buffer;
+}
+
+float GetBatteryCount(edict_t* ent) {
+	float count = 0;
+	for (int i = 0; i < MAX_BATTERYPACK; i++) {
+		count+=ent->client->pers.batteryPack[i];
+	}
+	return count;
+}
+
 
 /*
 ==================
@@ -163,91 +187,77 @@ DeathmatchScoreboardMessage
 */
 void DeathmatchScoreboardMessage (edict_t *ent, edict_t *killer)
 {
-	char	entry[1024];
-	char	string[1400];
-	int		stringlength;
-	int		i, j, k;
-	int		sorted[MAX_CLIENTS];
-	int		sortedscores[MAX_CLIENTS];
-	int		score, total;
-	int		picnum;
-	int		x, y;
-	gclient_t	*cl;
-	edict_t		*cl_ent;
-	char	*tag;
 
-	// sort the clients by score
-	total = 0;
-	for (i=0 ; i<game.maxclients ; i++)
-	{
-		cl_ent = g_edicts + 1 + i;
-		if (!cl_ent->inuse || game.clients[i].resp.spectator)
-			continue;
-		score = game.clients[i].resp.score;
-		for (j=0 ; j<total ; j++)
-		{
-			if (score > sortedscores[j])
-				break;
+	float bal;
+	float bat;
+	char layout[2048];
+	char itemEntry[256];
+	bal = ent->client->pers.balance;
+	bat = GetBatteryCount(ent);
+
+	//items = BuildItemList(ent); // already defined
+
+	/*Com_sprintf(layout, sizeof(layout),
+		"xv 32 yv 8 string \"=== PLAYER STATUS ===\"\n"
+		"xv 32 yv 24 string \"Flashlight:  %s\"\n"
+		"xv 32 yv 32 string \"Backpack:    %s\"\n"
+		"xv 32 yv 40 string \"Batteries:   %.1f\"\n"
+		"xv 32 yv 56 string \"Balance:     $%d\"\n"
+		"xv 32 yv 72 string \"=== INVENTORY ===\"\n",
+		ent->client->pers.hasFlashlight ? "Yes" : "No",
+		ent->client->pers.hasBackpack ? "Yes" : "No",
+		bat,
+		bal
+	);*/
+
+	Com_sprintf(layout, sizeof(layout),
+		"xv 32 yv 8 string2 \"=== PLAYER STATUS ===\""
+		"xv 32 yv 24 string \"Flashlight:  %s\""
+		"xv 32 yv 32 string \"Backpack:    %s\""
+		"xv 32 yv 40 string \"Batteries:   %.1f\""
+		"xv 32 yv 48 string \"Balance:     $%.1f\""
+		"xv 32 yv 60 string2 \"=== INVENTORY ===\""
+		"xv 32 yv 76 string \"%s\""
+		"xv 32 yv 84 string \"%s\""
+		"xv 32 yv 92 string \"%s\""
+		"xv 32 yv 100 string \"%s\""
+		"xv 32 yv 108 string \"%s\""
+		"xv 32 yv 116 string \"%s\""
+		"xv 32 yv 124 string \"%s\""
+		"xv 32 yv 132 string \"%s\""
+		"xv 32 yv 140 string \"%s\""
+		"xv 32 yv 148 string \"%s\"",
+		ent->client->pers.hasFlashlight ? "Yes" : "No",
+		ent->client->pers.hasBackpack ? "Yes" : "No",
+		bat,
+		bal,
+		ent->client->pers.itemInventory[0] ? ent->client->pers.itemInventory[0]->pickup_name : "",
+		ent->client->pers.itemInventory[1] ? ent->client->pers.itemInventory[1]->pickup_name : "",
+		ent->client->pers.itemInventory[2] ? ent->client->pers.itemInventory[2]->pickup_name : "",
+		ent->client->pers.itemInventory[3] ? ent->client->pers.itemInventory[3]->pickup_name : "",
+		ent->client->pers.itemInventory[4] ? ent->client->pers.itemInventory[4]->pickup_name : "",
+		ent->client->pers.itemInventory[5] ? ent->client->pers.itemInventory[5]->pickup_name : "",
+		ent->client->pers.itemInventory[6] ? ent->client->pers.itemInventory[6]->pickup_name : "",
+		ent->client->pers.itemInventory[7] ? ent->client->pers.itemInventory[7]->pickup_name : "",
+		ent->client->pers.itemInventory[8] ? ent->client->pers.itemInventory[8]->pickup_name : "",
+		ent->client->pers.itemInventory[9] ? ent->client->pers.itemInventory[9]->pickup_name : ""
+	);
+
+	/*strcat(layout, "=== INVENTORY ===\n");
+	for (int i = 0; i < ent->client->pers.hasBackpack ? MAX_INVENTORY : 3; i++) {
+		if (ent->client->pers.itemInventory[i]) {
+			Q_strncatz(layout, ent->client->pers.itemInventory[i]->pickup_name);
 		}
-		for (k=total ; k>j ; k--)
-		{
-			sorted[k] = sorted[k-1];
-			sortedscores[k] = sortedscores[k-1];
-		}
-		sorted[j] = i;
-		sortedscores[j] = score;
-		total++;
-	}
+	}*/
 
-	// print level name and exit rules
-	string[0] = 0;
+	/*gi.centerprintf(ent,
+		layout
+		);*/
 
-	stringlength = strlen(string);
-
-	// add the clients in sorted order
-	if (total > 12)
-		total = 12;
-
-	for (i=0 ; i<total ; i++)
-	{
-		cl = &game.clients[sorted[i]];
-		cl_ent = g_edicts + 1 + sorted[i];
-
-		picnum = gi.imageindex ("i_fixme");
-		x = (i>=6) ? 160 : 0;
-		y = 32 + 32 * (i%6);
-
-		// add a dogtag
-		if (cl_ent == ent)
-			tag = "tag1";
-		else if (cl_ent == killer)
-			tag = "tag2";
-		else
-			tag = NULL;
-		if (tag)
-		{
-			Com_sprintf (entry, sizeof(entry),
-				"xv %i yv %i picn %s ",x+32, y, tag);
-			j = strlen(entry);
-			if (stringlength + j > 1024)
-				break;
-			strcpy (string + stringlength, entry);
-			stringlength += j;
-		}
-
-		// send the layout
-		Com_sprintf (entry, sizeof(entry),
-			"client %i %i %i %i %i %i ",
-			x, y, sorted[i], cl->resp.score, cl->ping, (level.framenum - cl->resp.enterframe)/600);
-		j = strlen(entry);
-		if (stringlength + j > 1024)
-			break;
-		strcpy (string + stringlength, entry);
-		stringlength += j;
-	}
-
-	gi.WriteByte (svc_layout);
-	gi.WriteString (string);
+	/*Com_Printf("layout string: %s\n", layout);
+	Com_Printf("layout string length: %d\n", strlen(layout));*/
+	gi.WriteByte(svc_layout);
+	gi.WriteString(layout);
 }
 
 
@@ -278,8 +288,8 @@ void Cmd_Score_f (edict_t *ent)
 	ent->client->showinventory = false;
 	ent->client->showhelp = false;
 
-	if (!deathmatch->value && !coop->value)
-		return;
+	/*if (!deathmatch->value && !coop->value)
+		return;*/
 
 	if (ent->client->showscores)
 	{
