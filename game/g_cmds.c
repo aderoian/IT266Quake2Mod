@@ -1147,7 +1147,10 @@ void Cmd_ShowHelp_f(edict_t* ent) {
 		"\n"
 		"Tired of monsters? Buy a noisemaker (4)\n"
 		"Switch to it with '6', left-click to use\n"
-		"It will distract monsters for a while!"
+		"It will distract monsters for a while!\n\n"
+		"To get back to the Blaster, press '5'\n\n"
+		"To use the stun gun, right-click\n"
+		"the blaster, this will stun enemies"
 	);
 }
 
