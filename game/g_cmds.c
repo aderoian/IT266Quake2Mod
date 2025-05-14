@@ -1210,7 +1210,7 @@ void Cmd_BuyNoisemaker_f(edict_t* ent) {
 
 	//give player grenadelauncher and 1 grenade
 	GiveItem(ent, "Grenade Launcher", 1);
-	GiveItem(ent, "grenades", 1);
+	GiveItem(ent, "Grenades", 1);
 }
 
 qboolean UseEnergy(edict_t* ent, float amount);
@@ -1392,17 +1392,13 @@ void GiveItem(edict_t* ent, char* name, int count) {
 	it = FindItem(name);
 	if (!it)
 	{
-		it = FindItem(name);
-		if (!it)
-		{
-			gi.cprintf(ent, PRINT_HIGH, "unknown item: %s\n", name);
-			return;
-		}
+		Com_Printf("Unknown item: %s\n", name);
+		return;
 	}
 
 	if (!it->pickup)
 	{
-		gi.cprintf(ent, PRINT_HIGH, "Item is not pickable.\n");
+		Com_Printf("Item is not pickable: %s\n", name);
 		return;
 	}
 
@@ -1410,15 +1406,10 @@ void GiveItem(edict_t* ent, char* name, int count) {
 
 	if (it->flags & IT_AMMO)
 	{
-		ent->client->pers.inventory[index] = count;
+		ent->client->pers.inventory[index] += count;
 	}
 	else
 	{
-		it_ent = G_Spawn();
-		it_ent->classname = it->classname;
-		SpawnItem(it_ent, it);
-		Touch_Item(it_ent, ent, NULL, NULL);
-		if (it_ent->inuse)
-			G_FreeEdict(it_ent);
+		ent->client->pers.inventory[index] = 1;
 	}
 }
