@@ -517,7 +517,23 @@ void M_MoveFrame (edict_t *self)
 
 void monster_think (edict_t *self)
 {
-	M_MoveFrame (self);
+	
+
+	if (self->monsterinfo.stun_end > level.time)
+	{
+		self->s.effects |= EF_COLOR_SHELL;
+		self->s.renderfx |= RF_SHELL_RED;
+		self->nextthink = level.time + FRAMETIME;
+		return;
+	}
+	else
+	{
+		self->s.effects &= ~EF_COLOR_SHELL;
+		self->s.renderfx &= ~RF_SHELL_RED;
+	}
+
+	M_MoveFrame(self);
+
 	if (self->linkcount != self->monsterinfo.linkcount)
 	{
 		self->monsterinfo.linkcount = self->linkcount;
@@ -526,6 +542,8 @@ void monster_think (edict_t *self)
 	M_CatagorizePosition (self);
 	M_WorldEffects (self);
 	M_SetEffects (self);
+
+	if (self->monsterinfo.stun_end <= 0) self->monsterinfo.stun_end = level.time;
 
 	if (self->enemy && self->enemy->classname &&
 		strcmp(self->enemy->classname, "noise_maker") == 0)

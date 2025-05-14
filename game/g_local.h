@@ -450,6 +450,8 @@ typedef struct
 
 	int			power_armor_type;
 	int			power_armor_power;
+
+	float stun_end;
 } monsterinfo_t;
 
 

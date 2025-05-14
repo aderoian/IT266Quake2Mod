@@ -191,24 +191,8 @@ void DeathmatchScoreboardMessage (edict_t *ent, edict_t *killer)
 	float bal;
 	float bat;
 	char layout[2048];
-	char itemEntry[256];
 	bal = ent->client->pers.balance;
 	bat = GetBatteryCount(ent);
-
-	//items = BuildItemList(ent); // already defined
-
-	/*Com_sprintf(layout, sizeof(layout),
-		"xv 32 yv 8 string \"=== PLAYER STATUS ===\"\n"
-		"xv 32 yv 24 string \"Flashlight:  %s\"\n"
-		"xv 32 yv 32 string \"Backpack:    %s\"\n"
-		"xv 32 yv 40 string \"Batteries:   %.1f\"\n"
-		"xv 32 yv 56 string \"Balance:     $%d\"\n"
-		"xv 32 yv 72 string \"=== INVENTORY ===\"\n",
-		ent->client->pers.hasFlashlight ? "Yes" : "No",
-		ent->client->pers.hasBackpack ? "Yes" : "No",
-		bat,
-		bal
-	);*/
 
 	Com_sprintf(layout, sizeof(layout),
 		"xv 32 yv 8 string2 \"=== PLAYER STATUS ===\""
@@ -243,19 +227,6 @@ void DeathmatchScoreboardMessage (edict_t *ent, edict_t *killer)
 		ent->client->pers.itemInventory[9] ? (ent->client->pers.itemInventory[9]->viewName ? ent->client->pers.itemInventory[9]->viewName : ent->client->pers.itemInventory[9]->pickup_name) : ""
 	);
 
-	/*strcat(layout, "=== INVENTORY ===\n");
-	for (int i = 0; i < ent->client->pers.hasBackpack ? MAX_INVENTORY : 3; i++) {
-		if (ent->client->pers.itemInventory[i]) {
-			Q_strncatz(layout, ent->client->pers.itemInventory[i]->pickup_name);
-		}
-	}*/
-
-	/*gi.centerprintf(ent,
-		layout
-		);*/
-
-	/*Com_Printf("layout string: %s\n", layout);
-	Com_Printf("layout string length: %d\n", strlen(layout));*/
 	gi.WriteByte(svc_layout);
 	gi.WriteString(layout);
 }

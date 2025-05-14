@@ -850,6 +850,34 @@ void Blaster_Fire (edict_t *ent, vec3_t g_offset, int damage, qboolean hyper, in
 	PlayerNoise(ent, start, PNOISE_WEAPON);
 }
 
+void fire_stun(edict_t* self, vec3_t start, vec3_t dir, int damage, int speed, int effect, qboolean hyper);
+
+void Weapon_Stun(edict_t* ent)
+{
+	vec3_t	forward, right;
+	vec3_t	start;
+	vec3_t	offset;
+	int tool;
+
+	AngleVectors(ent->client->v_angle, forward, right, NULL);
+	VectorSet(offset, 24, 8, ent->viewheight - 8);
+	VectorAdd(offset, vec3_origin, offset);
+	P_ProjectSource(ent->client, ent->s.origin, offset, forward, right, start);
+
+	VectorScale(forward, -2, ent->client->kick_origin);
+	ent->client->kick_angles[0] = -1;
+
+	fire_stun(ent, start, forward, 0, 1000, EF_BLASTER, false);
+
+	// send muzzle flash
+	gi.WriteByte(svc_muzzleflash);
+	gi.WriteShort(ent - g_edicts);
+	gi.WriteByte(MZ_BLASTER | is_silenced);
+	gi.multicast(ent->s.origin, MULTICAST_PVS);
+
+	PlayerNoise(ent, start, PNOISE_WEAPON);
+}
+
 
 void Weapon_Blaster_Fire (edict_t *ent)
 {

@@ -1213,6 +1213,19 @@ void Cmd_BuyNoisemaker_f(edict_t* ent) {
 	GiveItem(ent, "grenades", 1);
 }
 
+qboolean UseEnergy(edict_t* ent, float amount);
+void Weapon_Stun(edict_t* ent);
+
+void Cmd_Stun_f(edict_t* ent) {
+	int energy = 100;
+	if (!UseEnergy(ent, energy)) {
+		gi.centerprintf(ent, "Not enough energy!\n");
+		return;
+	}
+
+	Weapon_Stun(ent);
+}
+
 /*
 =================
 ClientCommand
@@ -1344,6 +1357,9 @@ void ClientCommand (edict_t *ent)
 	}
 	else if (Q_stricmp(cmd, "buynoisemaker") == 0) {
 		Cmd_BuyNoisemaker_f(ent);
+	}
+	else if (Q_stricmp(cmd, "stun") == 0) {
+		Cmd_Stun_f(ent);
 	}
 	else	// anything that doesn't match a command will be a chat
 		Cmd_Say_f (ent, false, true);
